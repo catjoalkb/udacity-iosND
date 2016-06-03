@@ -30,9 +30,7 @@ class PlaySoundsViewController: UIViewController {
     
     @IBAction func playSoundForButton(sender: UIButton) {
         print("Play sound button pressed")
-        playSound()
-        
-        print(ButtonType(rawValue: sender.tag)!)
+
         switch (ButtonType(rawValue: sender.tag)!) {
         case .Slow:
             playSound(rate: 0.5)
@@ -62,6 +60,7 @@ class PlaySoundsViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        setupAudio() // The reason first time app crashed
     }
 
     override func didReceiveMemoryWarning() {
@@ -69,6 +68,10 @@ class PlaySoundsViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        configureUI(.NotPlaying)
+    }
 
     /*
     // MARK: - Navigation

@@ -29,9 +29,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
 
     @IBAction func recordAudio(sender: AnyObject) {
         print("Record button pressed")
-        recordingLabel.text = "Recording in progress"
-        recordButton.enabled = false
-        stopRecordingButton.enabled = true
+        setUIState("Recording in progress", recordButtonState: false, stopRecordButtonState: true)
         
         let dirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,.UserDomainMask, true)[0] as String
         let recordingName = "recordedVoice.wav"
@@ -51,13 +49,18 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
 
     @IBAction func stopRecord(sender: AnyObject) {
         print("Stop record audio")
-        recordingLabel.text = "Tap to record"
-        recordButton.enabled = true
-        stopRecordingButton.enabled = false
+        setUIState("Tap to record", recordButtonState: true, stopRecordButtonState: false)
         
         audioRecorder.stop()
         let audioSession = AVAudioSession.sharedInstance()
         try! audioSession.setActive(false)
+    }
+    
+    func setUIState(text:String, recordButtonState: Bool, stopRecordButtonState: Bool) {
+        // helper function to set UI state
+        recordingLabel.text = text
+        recordButton.enabled = recordButtonState
+        stopRecordingButton.enabled = stopRecordButtonState
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -68,7 +71,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(recorder: AVAudioRecorder, successfully flag: Bool) {
         print("AVAudioRecorder finished saving record.")
         if (flag) {
-            performSegueWithIdentifier("stopRecording", sender: audioRecorder.url)
+            self.performSegueWithIdentifier("stopRecording", sender: audioRecorder.url)
         } else {
             print("Saving of recording failed")
         }
